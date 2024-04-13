@@ -2,8 +2,7 @@
 // Created by Kacper on 03.10.2022.
 //
 
-#ifndef SZTUCZNAINTEL_GENERIC_SUDOKU_H
-#define SZTUCZNAINTEL_GENERIC_SUDOKU_H
+#pragma once
 #include <cstdint>
 #include "Header Files/graph_state.hpp"
 #include <array>
@@ -16,12 +15,12 @@ public:
     generic_sudoku(const std::string &s) {
         std::istringstream in(s);
         int w;
-        for(int i=0; i<M*N ;i++) {
-            for(int j=0; j<M*N; j++) {
-                if (!(in>>w) || w<0 || w>M*N) {
-                    throw std::domain_error("Empty Stream");
+        for(int i{}; i < M*N; ++i) {
+            for(int j{}; j < M*N; ++j) {
+                if (!(in >> w) || w < 0 || w > M*N) {
+                    throw std::domain_error("Invalid input");
                 }
-                this->board[i][j] = w;
+                board[i][j] = w;
             }
         }
     }
@@ -42,12 +41,12 @@ public:
 
     std::vector<std::unique_ptr<graph_state>> get_successors() const override {
         std::vector<std::unique_ptr<graph_state>> successors;
-        for(int i = 0; i < M*N; i++) {
-            for(int j = 0; j < M*N; j++) {
+        for(int i{}; i < M*N; i++) {
+            for(int j{}; j < M*N; j++) {
                 if(board[i][j] == 0) {
                     for(int8_t p: possibilities(i ,j)) {
                         auto c = clone();
-                        ((generic_sudoku&)* c).board[i][j] = p;
+                        dynamic_cast<generic_sudoku&>(*c).board[i][j] = p;
                         c->update_score(get_g() + 1);
                         successors.push_back(std::move(c));
                     }
@@ -62,9 +61,9 @@ public:
         std::ostringstream out;
         for(const auto& r: board) {
             for (auto s: r) {
-                out << (int)s << ' ';
+                out << static_cast<int>(s) << ' ';
             }
-            out<<std::endl;
+            out << '\n';
         }
         return out.str();
     }
@@ -84,10 +83,10 @@ public:
 protected:
     std::unordered_set<int8_t> possibilities(int r, int c) const {
         std::unordered_set<int8_t> possibilities;
-        for(int i=1; i<=M*N; i++) { //init possibilities
+        for(int i{1}; i<=M*N; i++) { //init possibilities
             possibilities.insert(i);
         }
-        for(int i=0 ; i<M*N; i++) {
+        for(int i{} ; i<M*N; i++) {
             possibilities.erase(board[r][i]);
             possibilities.erase(board[i][c]);
         }
@@ -95,8 +94,8 @@ protected:
         int x = abs(r/M)*M; //wiersz
         int y = abs(c/N)*N; //kolumna
 
-        for(int i=0; i<M; i++) {
-            for(int j=0; j<N; j++) {
+        for(int i{}; i<M; i++) {
+            for(int j{}; j<N; j++) {
                 possibilities.erase(board[x+i][y+j]);
             }
         }
@@ -113,9 +112,5 @@ protected:
     }
 
     std::array<std::array<uint8_t, M*N>, M*N> board;
-
     static constexpr Heuristic<M, N> heuristic {};
 };
-
-
-#endif //SZTUCZNAINTEL_GENERIC_SUDOKU_H

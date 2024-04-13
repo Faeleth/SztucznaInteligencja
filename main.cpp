@@ -13,8 +13,7 @@ struct H_remaining {
         int counter = 0;
         for (const auto& i:board){
             for (auto j:i) {
-                if(j==0)
-                    counter++;
+                if(j==0) counter++;
             }
         }
         return counter;
@@ -76,7 +75,6 @@ void zad_2() {
     generic_sudoku_minimal<2,3,H_remaining> sudokuMinimal(s);
     informative_searcher<uint8_t> informativeSearcherMinimal(sudoku, default_h_compare<uint8_t>, std::numeric_limits<size_t>::max());
     std::cout << informativeSearcherMinimal.get_stats();
-
 }
 
 void zad_3() {
