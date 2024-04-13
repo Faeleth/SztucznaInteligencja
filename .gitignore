@@ -1,3 +1,5 @@
+cmake-build-debug/
+cmake-build-release/
 cmake-build-release/Testing/Temporary/LastTest.log
 cmake-build-release/SztucznaIntel.exe
 cmake-build-release/SztucznaIntel.cbp
